@@ -3,7 +3,7 @@
 This is an agent-based [GitHub Copilot Extension](https://docs.github.com/en/copilot/using-github-copilot/using-extensions-to-integrate-external-tools-with-copilot-chat) 
 
 >[!NOTE]
-> Copilot Extensions are in public preview and GitHub Models are in limited public preview. They may be subject to change.
+> Copilot Extensions are in public preview. They may be subject to change.
 
 ## What it can do
 
