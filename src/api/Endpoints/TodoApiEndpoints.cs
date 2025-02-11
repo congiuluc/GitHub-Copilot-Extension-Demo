@@ -10,7 +10,7 @@ public static class TodoEndpoints
         app.MapGet("/api/todos", async (ITodoRepository repository, HttpContext context, RequestValidationService requestValidationService, GitHubService gitHubService) =>
         {
                 context.Request.Headers.TryGetValue("x-github-token", out var token);
-                var user = await gitHubService.GetCurrentUserAsync(token);
+                var user = await gitHubService.GetCurrentUserAsync(token!);
                 var userId = user?.Login;
                 if (!string.IsNullOrEmpty(userId))
                 {
@@ -30,7 +30,7 @@ public static class TodoEndpoints
         app.MapGet("/api/todos/{id}", async (string id, ITodoRepository repository, HttpContext context, RequestValidationService requestValidationService, GitHubService gitHubService) =>
         {
                 context.Request.Headers.TryGetValue("x-github-token", out var token);
-                var user = await gitHubService.GetCurrentUserAsync(token);
+                var user = await gitHubService.GetCurrentUserAsync(token!);
                 var userId = user?.Login;
                 if (!string.IsNullOrEmpty(userId))
                 {
@@ -60,7 +60,7 @@ public static class TodoEndpoints
         app.MapPost("/api/todos", async (TodoItem todo, ITodoRepository repository, HttpContext context, RequestValidationService requestValidationService, GitHubService gitHubService) =>
         {
             context.Request.Headers.TryGetValue("x-github-token", out var token);
-            var user = await gitHubService.GetCurrentUserAsync(token);
+            var user = await gitHubService.GetCurrentUserAsync(token!);
             var userId = user?.Login;
             if (!string.IsNullOrEmpty(userId))
             {
@@ -78,10 +78,10 @@ public static class TodoEndpoints
         })
         .WithName("CreateTodo");
 
-        app.MapPut("/api/todos/{id}", async (string id, TodoItem todo, ITodoRepository repository, HttpContext context, RequestValidationService requestValidationService, GitHubService gitHubService) =>
+        _ = app.MapPut("/api/todos/{id}", async (string id, TodoItem todo, ITodoRepository repository, HttpContext context, RequestValidationService requestValidationService, GitHubService gitHubService) =>
         {
             context.Request.Headers.TryGetValue("x-github-token", out var token);
-            var user = await gitHubService.GetCurrentUserAsync(token);
+            var user = await gitHubService.GetCurrentUserAsync(token!);
             var userId = user?.Login;
             if (!string.IsNullOrEmpty(userId))
             {
@@ -119,7 +119,7 @@ public static class TodoEndpoints
         app.MapDelete("/api/todos/{id}", async (string id, ITodoRepository repository, HttpContext context, RequestValidationService requestValidationService, GitHubService gitHubService) =>
         {
             context.Request.Headers.TryGetValue("x-github-token", out var token);
-            var user = await gitHubService.GetCurrentUserAsync(token);
+            var user = await gitHubService.GetCurrentUserAsync(token!);
             var userId = user?.Login;
             if (!string.IsNullOrEmpty(userId))
             {

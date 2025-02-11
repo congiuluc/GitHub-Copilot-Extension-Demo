@@ -44,7 +44,7 @@ public static class TodoSkillsetEndpoints
         app.MapPost("/skillset/todos/list", async (HttpContext context, GitHubService gitHubService, ITodoRepository repository) =>
         {
             context.Request.Headers.TryGetValue("x-github-token", out var token);
-            var user = await gitHubService.GetCurrentUserAsync(token);
+            var user = await gitHubService.GetCurrentUserAsync(token!);
             var userId = user?.Login;
             if (!string.IsNullOrEmpty(userId))
             {
@@ -64,7 +64,7 @@ public static class TodoSkillsetEndpoints
         app.MapPost("/skillset/todos/add", async ( ITodoRepository repository, TodoItem todo, HttpContext context, RequestValidationService requestValidationService, GitHubService gitHubService) =>
         {
             context.Request.Headers.TryGetValue("x-github-token", out var token);
-            var user = await gitHubService.GetCurrentUserAsync(token);
+            var user = await gitHubService.GetCurrentUserAsync(token!);
             var userId = user?.Login;
             if (!string.IsNullOrEmpty(userId))
             {
@@ -85,7 +85,7 @@ public static class TodoSkillsetEndpoints
         app.MapPost("/skillset/todos/update", async (TodoItem todo, ITodoRepository repository,HttpContext context, RequestValidationService requestValidationService, GitHubService gitHubService) =>
         {
             context.Request.Headers.TryGetValue("x-github-token", out var token);
-            var user = await gitHubService.GetCurrentUserAsync(token);
+            var user = await gitHubService.GetCurrentUserAsync(token!);
             var userId = user?.Login;
             if (!string.IsNullOrEmpty(userId))
             {
@@ -129,7 +129,7 @@ public static class TodoSkillsetEndpoints
         {
             var id=todo.Id;
             context.Request.Headers.TryGetValue("x-github-token", out var token);
-            var user = await gitHubService.GetCurrentUserAsync(token);
+            var user = await gitHubService.GetCurrentUserAsync(token!);
             var userId = user?.Login;
             if (!string.IsNullOrEmpty(userId))
             {
