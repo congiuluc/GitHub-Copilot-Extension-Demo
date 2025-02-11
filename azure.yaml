@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: copilot-extension-demo
+metadata:
+    template: copilot-extension-demo@1.11.1
+services:
+    todo-api:
+        project: ./src/api
+        host: appservice
+        language: dotnet
+    copilot-app:
+        project: ./src/app
+        host: appservice
+        language: js
