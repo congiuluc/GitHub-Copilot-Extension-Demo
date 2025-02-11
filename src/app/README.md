@@ -1,4 +1,4 @@
-# @models Copilot Extension
+# Todo Copilot Extension
 
 This is an agent-based [GitHub Copilot Extension](https://docs.github.com/en/copilot/using-github-copilot/using-extensions-to-integrate-external-tools-with-copilot-chat) 
 
