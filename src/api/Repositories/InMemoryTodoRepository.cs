@@ -33,9 +33,15 @@ public class InMemoryTodoRepository : ITodoRepository
 
     public async Task<TodoItem?> UpdateTodoAsync(TodoItem todo)
     {
-        _context.Entry(todo).State = EntityState.Modified;
+        var existingTodo = await _context.TodoItems.FindAsync(todo.Id);
+        if (existingTodo == null)
+        {
+            return null;
+        }
+
+        _context.Entry(existingTodo).CurrentValues.SetValues(todo);
         await _context.SaveChangesAsync();
-        return todo;
+        return existingTodo;
     }
 
     public async Task<bool> DeleteTodoAsync(string id)
