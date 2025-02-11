@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 public static class TodoSkillsetEndpoints
@@ -124,8 +125,9 @@ public static class TodoSkillsetEndpoints
         })
         .WithName("SkillsetUpdateTodo");
 
-        app.MapPost("/skillset/todos/delete", async (string id, ITodoRepository repository,HttpContext context, RequestValidationService requestValidationService, GitHubService gitHubService) =>
+        app.MapPost("/skillset/todos/delete", async (TodoItem todo,ITodoRepository repository,HttpContext context, RequestValidationService requestValidationService, GitHubService gitHubService) =>
         {
+            var id=todo.Id;
             context.Request.Headers.TryGetValue("x-github-token", out var token);
             var user = await gitHubService.GetCurrentUserAsync(token);
             var userId = user?.Login;

@@ -21,7 +21,7 @@ public class InMemoryTodoRepository : ITodoRepository
 
     public async Task<TodoItem?> GetTodoAsync(string id)
     {
-        return await _context.TodoItems.FindAsync(id);
+        return await _context.TodoItems.SingleOrDefaultAsync(t => t.Id == id);
     }
 
     public async Task CreateTodoAsync(TodoItem todo)
