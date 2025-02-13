@@ -1,6 +1,7 @@
 import { createServer, IncomingMessage } from "http";
 
-import { verifyAndParseRequest, transformPayloadForOpenAICompatibility, createReferencesEvent } from "@copilot-extensions/preview-sdk";
+import { verifyAndParseRequest, transformPayloadForOpenAICompatibility, createReferencesEvent } 
+from "@copilot-extensions/preview-sdk";
 import OpenAI from "openai";
 
 import { RunnerResponse } from "./functions.js";
@@ -14,15 +15,17 @@ import { TodoAPI } from "./todo-api.js";
 import { env } from "process";
 
 const server = createServer(async (request, response) => {
+  // Handle GET requests
   if (request.method === "GET") {
     response.statusCode = 200;
     response.end(`OK`);
     return;
   }
 
+  // Get the request body
   const body = await getBody(request);
-  console.log("Received request", body);
 
+  // Verify and parse the request
   let verifyAndParseRequestResult: Awaited<ReturnType<typeof verifyAndParseRequest>>;
   const apiKey = request.headers["x-github-token"] as string;
   try {
@@ -40,6 +43,7 @@ const server = createServer(async (request, response) => {
 
   const { isValidRequest, payload } = verifyAndParseRequestResult
 
+  // Check if the request is valid
   if (!isValidRequest) {
     console.log("Signature verification failed");
     response.statusCode = 401
@@ -48,18 +52,19 @@ const server = createServer(async (request, response) => {
 
   console.log("Signature verified");
 
+  // Transform the payload for OpenAI compatibility
   const compatibilityPayload = transformPayloadForOpenAICompatibility(payload);
 
-  // Use the GitHub API token sent in the request
+  // Check if the GitHub API token is provided
   if (!apiKey) {
     response.statusCode = 400
     response.end()
     return;
   }
   const apiBaseURL = env.API_BASE_URL || "https://api.github.com";
+  
   // List of functions that are available to be called
   const todoAPI = new TodoAPI(apiBaseURL, apiKey);
-
   const functions = [listTasks, addTask, updateTask, deleteTask, getWeather, getTask];
 
   // Use the Copilot API to determine which function to execute
@@ -67,7 +72,6 @@ const server = createServer(async (request, response) => {
     baseURL: "https://api.githubcopilot.com",
     apiKey,
   });
-
 
   const toolCallMessages = [
     {
@@ -89,6 +93,7 @@ const server = createServer(async (request, response) => {
   });
   console.timeEnd("tool-call");
 
+  // Check if a tool call was found
   if (
     !toolCaller.choices[0] ||
     !toolCaller.choices[0].message ||
@@ -129,7 +134,7 @@ const server = createServer(async (request, response) => {
 
     console.log("\t with args", args);
     const func = new funcClass(todoAPI);
-    //functionCallRes = await func.execute(payload.messages);
+    // Execute the function with the provided arguments
     functionCallRes = await func.execute(payload.messages, args);
   } catch (err) {
     console.error(err);
@@ -139,7 +144,7 @@ const server = createServer(async (request, response) => {
   }
   console.timeEnd("function-exec");
 
-
+  // Stream the response from the Copilot API
   const stream = await capiClient.chat.completions.create({
     stream: true,
     model: "gpt-4o",
@@ -156,10 +161,12 @@ const server = createServer(async (request, response) => {
   response.end();
 });
 
+// Start the server
 const port = process.env.PORT || "3000"
 server.listen(port);
 console.log(`Server running at http://localhost:${port}`);
 
+// Function to get the body of the request
 function getBody(request: IncomingMessage): Promise<string> {
   return new Promise((resolve) => {
     const bodyParts: any[] = [];
