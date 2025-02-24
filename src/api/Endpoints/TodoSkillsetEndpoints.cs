@@ -144,11 +144,12 @@ public static class TodoSkillsetEndpoints
                     logger.LogWarning("Todo with id {id} does not belong to user {userId}.", id, userId);
                     return Results.BadRequest();
                 }
-                logger.LogInformation("Deleting todo with id {id}.", id);
+                var sanitizedId = id.Replace(Environment.NewLine, "").Replace("\n", "").Replace("\r", "");
+                logger.LogInformation("Deleting todo with id {id}.", sanitizedId);
                 var success = await repository.DeleteTodoAsync(id);
                 if (!success)
                 {
-                    logger.LogWarning("Todo with id {id} not found for deletion.", id);
+                    logger.LogWarning("Todo with id {id} not found for deletion.", sanitizedId);
                     return Results.NotFound();
                 }
                 logger.LogInformation("Todo deleted successfully.");
