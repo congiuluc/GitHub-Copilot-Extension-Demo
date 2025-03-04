@@ -88,20 +88,21 @@ public static class TodoEndpoints
                 var task = await repository.GetTodoAsync(id);
                 if (task == null)
                 {
-                    logger.LogWarning("Todo with id {id} not found for update.", id);
+                    var sanitizedId = id.Replace(Environment.NewLine, "").Replace("\n", "").Replace("\r", "");
+                    logger.LogWarning("Todo with id {id} not found for update.", sanitizedId);
                     return Results.NotFound();
                 }
                 if (task.UserId != userId)
                 {
-                    logger.LogWarning("User {userId} is not authorized to update todo with id {id}.", userId, id);
+                    logger.LogWarning("User {userId} is not authorized to update todo with id {id}.", userId, sanitizedId);
                     return Results.BadRequest();
                 }
                 todo.UserId = userId;
-                logger.LogInformation("Updating todo with id {id}.", id);
+                logger.LogInformation("Updating todo with id {id}.", sanitizedId);
                 var updatedTodo = await repository.UpdateTodoAsync(todo);
                 if (updatedTodo == null)
                 {
-                    logger.LogWarning("Todo with id {id} not found for update.", id);
+                    logger.LogWarning("Todo with id {id} not found for update.", sanitizedId);
                     return Results.NotFound();
                 }
 
